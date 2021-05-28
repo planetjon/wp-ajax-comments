@@ -1,6 +1,11 @@
 ;(function() {
 
-var commentsBlock = document.getElementById('aac_stub')
+var commentsBlock
+
+if(!(commentsBlock = document.getElementById('aac-stub'))) {
+	return
+}
+
 var postID = commentsBlock.dataset.postid
 
 delegateEvent(commentsBlock, 'click', '.comment-reply-link', function(e) {
@@ -27,7 +32,7 @@ if('IntersectionObserver' in window) {
 		})
 	})
 
-	commentsObserver.observe(document.getElementById('aac_stub'))
+	commentsObserver.observe(commentsBlock)
 }
 else {
 	loadComments()
@@ -99,11 +104,6 @@ function loadComments() {
 			respondAnchor.id = 'respond-anchor'
 			respond.after(respondAnchor)
 			formActions.append(resetButton)
-
-			commentsBlock.querySelectorAll('.comment-metadata time').forEach(function(time) {
-				var timeSinceString = timeSince(time.getAttribute('datetime'))
-				time.innerText = timeSinceString
-			})
 		})
 }
 
@@ -111,22 +111,5 @@ function delegateEvent(delegate, event, target, handler) {
 	delegate.addEventListener(event, function(e) {
 		e.target.matches(target) && handler(e)
 	})
-}
-
-function timeSince(datestring) {
-	var date = Date.parse(datestring)
-	var seconds = Math.floor((new Date() - date) / 1000)
-	var timeMap = {year: 31536000, month: 2592000, day: 86400, hour: 3600, minute: 60, second: 1}
-	var interval, since
-
-	for(t of Object.keys(timeMap)) {
-		interval = Math.floor(seconds / timeMap[t])
-		if(interval >= 1) {
-			since = interval + ' ' + t + (interval > 1 ? 's' : '') + ' ago'
-			break
-		}
-	}
-
-	return since
 }
 })()
