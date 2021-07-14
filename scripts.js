@@ -1,8 +1,7 @@
 ;(function() {
-
 var commentsBlock
 
-if(!(commentsBlock = document.getElementById('aac-stub'))) {
+if(!(commentsBlock = document.getElementById('wac-stub'))) {
 	return
 }
 
@@ -46,6 +45,7 @@ function replyToComment(target) {
 
 	document.getElementById('comment_parent').value = commentID
 	document.getElementById(commentBlockID).after(respond)
+	document.getElementById(commentBlockID).scrollIntoView({behavior: 'smooth'})
 }
 
 function submitComment(target) {
@@ -61,7 +61,7 @@ function submitComment(target) {
 	})
 	.then(function(response) {
 		if(!response.status) {
-			placeholder.innerHTML = '<p><small>&#x29D6; Thanks! Your comment will be available shortly. If you dont see it immediately, it is pending moderation.</small></p>'
+			placeholder.innerHTML = '<p><small>' + wac_env.pending_msg + '</small></p>'
 			placeholder.innerHTML += payload.get('comment')
 		}
 		else {
@@ -69,7 +69,7 @@ function submitComment(target) {
 		}
 	})
 	.catch(function() {
-		placeholder.innerHTML = '&#x274C; Something went wrong. Please try again later.'
+		placeholder.innerHTML = wac_env.error_msg
 	})
 	.finally(function() {
 		var responder = document.getElementById('respond')
@@ -85,7 +85,7 @@ function resetResponder() {
 }
 
 function loadComments() {
-	fetch(aac_env.ajaxurl + '?action=aac_load_comments&postID=' + postID)
+	fetch(wac_env.ajaxurl + '?action=wac_load_comments&postID=' + postID)
 		.then(function(response) {
 			return response.ok && response.text();
 		})
